@@ -73,7 +73,7 @@ function App() {
   const login = async () => {
 
     const respuesta = await fetch(
-      "http://localhost:3001/login",
+      "https://congregacion-app.onrender.com/login",
       {
         method: "POST",
 
@@ -119,7 +119,7 @@ function App() {
   useEffect(() => {
 
     fetch(
-      "http://localhost:3001/usuarios"
+      "https://congregacion-app.onrender.com/usuarios"
     )
       .then((res) => res.json())
 
@@ -147,7 +147,7 @@ function App() {
 
       const respuesta =
         await fetch(
-          `http://localhost:3001/asignaciones/${id}`
+          `https://congregacion-app.onrender.com/asignaciones/${id}`
         );
 
       const data =
@@ -161,7 +161,7 @@ function App() {
 
       const respuesta =
         await fetch(
-          "http://localhost:3001/asignaciones"
+          "https://congregacion-app.onrender.com/asignaciones"
         );
 
       const data =
@@ -201,7 +201,7 @@ function App() {
       };
 
       await fetch(
-        "http://localhost:3001/asignaciones",
+        "https://congregacion-app.onrender.com/asignaciones",
         {
           method: "POST",
 
@@ -261,7 +261,7 @@ function App() {
 
       const respuesta =
         await fetch(
-          "http://localhost:3001/usuarios",
+          "https://congregacion-app.onrender.com/usuarios",
           {
             method: "POST",
 
@@ -306,7 +306,7 @@ function App() {
     async (id) => {
 
       await fetch(
-        `http://localhost:3001/asignaciones/${id}`,
+        `https://congregacion-app.onrender.com/asignaciones/${id}`,
         {
           method: "DELETE"
         }
@@ -349,7 +349,7 @@ function App() {
       };
 
       await fetch(
-        `http://localhost:3001/asignaciones/${asignacion.id}`,
+        `https://congregacion-app.onrender.com/asignaciones/${asignacion.id}`,
         {
           method: "PUT",
 
