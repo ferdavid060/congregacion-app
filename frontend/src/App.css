@@ -1,0 +1,194 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #18181b;
+  font-family: Arial, sans-serif;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #18181b,
+      #27272a
+    );
+}
+
+.login-container {
+  height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+}
+
+.login-card {
+  width: 320px;
+
+  background: #25148310;
+
+  border: 1px solid #75b60c20;
+
+  backdrop-filter: blur(10px);
+
+  padding: 40px;
+
+  border-radius: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+.login-card h1,
+.login-card p {
+  text-align: center;
+}
+
+input,
+select {
+  padding: 12px;
+
+  border-radius: 10px;
+
+  border: none;
+
+  font-size: 16px;
+}
+
+button {
+  padding: 12px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  color: rgb(6, 30, 167);
+
+  cursor: pointer;
+
+  font-size: 15px;
+}
+
+.header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.logout-btn {
+  background: #ef4444;
+}
+
+.admin-panel {
+  background: #ffffff10;
+
+  border: 1px solid #ffffff20;
+
+  backdrop-filter: blur(10px);
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+
+  margin-bottom: 30px;
+}
+
+.add-btn {
+  background: #22c55e;
+}
+
+.save-btn {
+  background: #2563eb;
+}
+
+.edit-btn {
+  background: #f59e0b;
+
+  margin-right: 10px;
+
+  margin-top: 10px;
+}
+
+.delete-btn {
+  background: #ef4444;
+
+  margin-top: 10px;
+}
+
+.section-title {
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #ffffff10;
+
+  border: 1px solid #ffffff20;
+
+  backdrop-filter: blur(10px);
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+
+  .page {
+    padding: 15px;
+  }
+
+  .header {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 15px;
+  }
+
+  .login-card {
+
+    width: 100%;
+
+    max-width: 350px;
+  }
+
+  button {
+
+    width: 100%;
+  }
+
+  .edit-btn,
+  .delete-btn {
+
+    margin-right: 0;
+
+    margin-bottom: 10px;
+  }
+}
+

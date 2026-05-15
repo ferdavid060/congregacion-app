@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "usuario_id": 1,
+    "fecha": "2026-05-20",
+    "parte": "Lectura bíblica"
+  },
+  {
+    "id": 2,
+    "usuario_id": 2,
+    "fecha": "2026-06-10",
+    "parte": "Oración final"
+  },
+  {
+    "id": 1778854156321,
+    "usuario_id": 2,
+    "parte": "Oración final reunión",
+    "fecha": "2026-12-31"
+  },
+  {
+    "id": 1778856609118,
+    "usuario_id": 3,
+    "parte": "Discurso Sur Catamarca",
+    "fecha": "2027-02-22"
+  }
+]
