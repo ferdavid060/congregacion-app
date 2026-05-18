@@ -76,9 +76,10 @@ const [segundoUsuario,
     useState("");
 
   // FILTRO
-  const [filtroUsuario,
-    setFiltroUsuario] =
-    useState("todos");
+  const [
+  filtroUsuario,
+  setFiltroUsuario
+] = useState("");
 
   // NUEVO USUARIO
   const [nuevoNombre,
@@ -110,7 +111,26 @@ const [segundoUsuario,
  const [pantallaActiva,
   setPantallaActiva] =
   useState("inicio");
+ 
+ const [informes,
+  setInformes] =
+  useState([]);
 
+ const [horas,
+  setHoras] =
+  useState("");
+
+ const [cursos,
+  setCursos] =
+  useState("");
+
+ const [participa,
+  setParticipa] =
+  useState(true);
+
+ const [comentarioInforme,
+  setComentarioInforme] =
+  useState("");
 
  const categorias = {
 
@@ -590,19 +610,73 @@ const crearUsuario =
   };
 
   // FILTRAR
-  const asignacionesFiltradas =
 
-    filtroUsuario === "todos"
+  let asignacionesFiltradas = [];
 
-      ? asignaciones
+if (
+  user &&
+  user.rol !== "admin"
+) {
 
-      : asignaciones.filter(
-          (a) =>
+  asignacionesFiltradas =
+    asignaciones.filter(
+      (a) => {
+
+        if (
+          a.usuarios_ids
+        ) {
+
+          return a.usuarios_ids.includes(
+            user.id
+          );
+        }
+
+        return (
+          a.usuario_id ===
+          user.id
+        );
+      }
+    );
+
+} else {
+
+  if (
+    filtroUsuario ===
+    "todos"
+  ) {
+
+    asignacionesFiltradas =
+      asignaciones;
+
+  } else if (
+    filtroUsuario !== ""
+  ) {
+
+    asignacionesFiltradas =
+      asignaciones.filter(
+        (a) => {
+
+          if (
+            a.usuarios_ids
+          ) {
+
+            return a.usuarios_ids.includes(
+              parseInt(
+                filtroUsuario
+              )
+            );
+          }
+
+          return (
             a.usuario_id ===
             parseInt(
               filtroUsuario
             )
-        );
+          );
+        }
+      );
+  }
+}
   
  
 const coloresCategorias = {
@@ -927,64 +1001,134 @@ ${emojisCategorias[
 
   return (
     <div className="page">
-  <div className="menu-mobile">
+  
+<div className="menu-mobile">
 
   <button
+    className={
+      pantallaActiva === "inicio"
+        ? "menu-btn active"
+        : "menu-btn"
+    }
+
     onClick={() =>
       setPantallaActiva(
         "inicio"
       )
     }
   >
-    🏠
+    <span>🏠</span>
+    <p>Inicio</p>
   </button>
 
   <button
+    className={
+      pantallaActiva ===
+      "calendario"
+
+        ? "menu-btn active"
+
+        : "menu-btn"
+    }
+
     onClick={() =>
       setPantallaActiva(
         "calendario"
       )
     }
   >
-    📅
+    <span>📅</span>
+    <p>Calendario</p>
   </button>
 
-  <button
-    onClick={() =>
-      setPantallaActiva(
-        "nueva"
-      )
-    }
-  >
-    ➕
-  </button>
+  {user.rol ===
+  "admin" && (
 
-  <button
-    onClick={() =>
-      setPantallaActiva(
-        "usuarios"
-      )
-    }
-  >
-    👥
-  </button>
+<button
+  className={
+    pantallaActiva ===
+    "nueva"
+
+      ? "menu-btn active"
+
+      : "menu-btn"
+  }
+
+  onClick={() =>
+    setPantallaActiva(
+      "nueva"
+    )
+  }
+>
+  <span>➕</span>
+  <p>Nueva</p>
+</button>
+)}
+
+  {user.rol ===
+  "admin" && (
+
+<button
+  className={
+    pantallaActiva ===
+    "usuarios"
+
+      ? "menu-btn active"
+
+      : "menu-btn"
+  }
+
+  onClick={() =>
+    setPantallaActiva(
+      "usuarios"
+    )
+  }
+>
+  <span>👥</span>
+
+  <p>Usuarios</p>
+
+</button>
+)}
+<button
+  className={
+    pantallaActiva ===
+    "informes"
+
+      ? "menu-btn active"
+
+      : "menu-btn"
+  }
+
+  onClick={() =>
+    setPantallaActiva(
+      "informes"
+    )
+  }
+>
+  <span>📝</span>
+  <p>Informes</p>
+</button>
 
 </div>
+ 
 
 
+{pantallaActiva ===
+  "inicio" && (
 
       <div className="header">
 
         <div>
 
-          <h1>
-            Hola {user.nombre} 👋
-          </h1>
-
+          <h1 className="welcome-title">
+         Hola {user.nombre} 👋
+              </h1>
+           
           <p>
             Bienvenido al sistema
           </p>
-
+         
         </div>
 
         <button
@@ -995,9 +1139,124 @@ ${emojisCategorias[
         </button>
 
       </div>
+     )}
+     {pantallaActiva ===
+  "inicio" && (
 
-      {user.rol === "admin" && (
+<>
+<div className="dashboard-grid">
 
+  <div className="dashboard-card">
+
+    <h3>
+      📅 Asignaciones
+    </h3>
+
+    <h1>
+      {
+        asignaciones.length
+      }
+    </h1>
+
+  </div>
+
+  <div className="dashboard-card">
+
+    <h3>
+      👥 Usuarios
+    </h3>
+
+    <h1>
+      {
+        usuarios.length
+      }
+    </h1>
+
+  </div>
+
+  <div className="dashboard-card">
+
+    <h3>
+      📝 Informes
+    </h3>
+
+    <h1>
+      {
+        informes.length
+      }
+    </h1>
+
+  </div>
+
+</div>
+
+<div className="dashboard-next">
+
+  <h2>
+    ⭐ Próxima asignación
+  </h2>
+
+  {
+
+    asignaciones[0] && (
+
+      <div className="next-card">
+
+        <h3>
+          {
+            asignaciones[0]
+              .parte
+          }
+        </h3>
+
+        <p>
+          📅 {
+            formatearFecha(
+              asignaciones[0]
+                .fecha
+            )
+          }
+        </p>
+
+        <p>
+          👥 {
+
+            asignaciones[0]
+              .usuarios_ids
+
+              ? asignaciones[0]
+                  .usuarios_ids
+                  .map((id) => {
+
+                    return usuarios.find(
+                      (u) =>
+                        u.id === id
+                    )?.nombre;
+                  })
+
+                  .join(" + ")
+
+              : usuarios.find(
+                  (u) =>
+                    u.id ===
+                    asignaciones[0]
+                      .usuario_id
+                )?.nombre
+          }
+        </p>
+
+      </div>
+    )
+  }
+
+</div>
+</>
+)}
+      {user.rol ===
+     "admin" &&
+
+      pantallaActiva ===
+  "nueva" && (
         <>
           <div className="admin-panel">
 
@@ -1185,95 +1444,325 @@ ${emojisCategorias[
             </button>
 
           </div>
+          
 
-          <div className="admin-panel">
 
-            <h2>
-              👥 Crear usuario
-            </h2>
+</>
+)}
+{user.rol ===
+  "admin" &&
 
-            <input
-              placeholder="Nombre"
-              value={nuevoNombre}
-              onChange={(e) =>
-                setNuevoNombre(
-                  e.target.value
-                )
-              }
-            />
+pantallaActiva ===
+  "usuarios" && (
+<>
 
-            <input
-              placeholder="Usuario"
-              value={nuevoUsuario}
-              onChange={(e) =>
-                setNuevoUsuario(
-                  e.target.value
-                )
-              }
-            />
+  <div className="admin-panel">
 
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={nuevoPassword}
-              onChange={(e) =>
-                setNuevoPassword(
-                  e.target.value
-                )
-              }
-            />
+    <h2>
+      👥 Crear usuario
+    </h2>
 
-            <select
-              value={nuevoRol}
+    <input
+      placeholder="Nombre"
+      value={nuevoNombre}
 
-              onChange={(e) =>
-                setNuevoRol(
-                  e.target.value
-                )
-              }
-            >
+      onChange={(e) =>
+        setNuevoNombre(
+          e.target.value
+        )
+      }
+    />
 
-              <option value="miembro">
-                Miembro
-              </option>
+    <input
+      placeholder="Usuario"
+      value={nuevoUsuario}
 
-              <option value="admin">
-                Admin
-              </option>
+      onChange={(e) =>
+        setNuevoUsuario(
+          e.target.value
+        )
+      }
+    />
 
-            </select>
+    <input
+      type="password"
+      placeholder="Contraseña"
 
-            <button
-              className="save-btn"
-              onClick={crearUsuario}
-            >
-              👥 Crear usuario
-            </button>
+      value={nuevoPassword}
 
-          </div>
-           
-         
-        <div className="admin-panel">
+      onChange={(e) =>
+        setNuevoPassword(
+          e.target.value
+        )
+      }
+    />
 
-       <h2>
-       👥 Gestionar usuario
-       </h2>
+    <select
+      value={nuevoRol}
 
-        <select
-         value={usuarioGestion}
+      onChange={(e) =>
+        setNuevoRol(
+          e.target.value
+        )
+      }
+    >
 
-        onChange={(e) =>
-       setUsuarioGestion(
+      <option value="miembro">
+        Miembro
+      </option>
+
+      <option value="admin">
+        Admin
+      </option>
+
+    </select>
+
+    <button
+      className="save-btn"
+      onClick={crearUsuario}
+    >
+      👥 Crear usuario
+    </button>
+
+  </div>
+
+  <div className="admin-panel">
+
+    <h2>
+      👥 Gestionar usuario
+    </h2>
+
+    <select
+      value={usuarioGestion}
+
+      onChange={(e) =>
+        setUsuarioGestion(
+          e.target.value
+        )
+      }
+    >
+
+      <option value="">
+        Seleccionar usuario
+      </option>
+
+      {usuarios.map((u) => (
+
+        <option
+          key={u.id}
+          value={u.id}
+        >
+          {u.nombre}
+        </option>
+
+      ))}
+
+    </select>
+
+    {usuarioGestion && (
+
+      <div className="user-row">
+
+        <div>
+
+          <strong>
+            {
+              usuarios.find(
+                (u) =>
+                  u.id ===
+                  parseInt(
+                    usuarioGestion
+                  )
+              )?.nombre
+            }
+          </strong>
+
+          <p>
+            @
+            {
+              usuarios.find(
+                (u) =>
+                  u.id ===
+                  parseInt(
+                    usuarioGestion
+                  )
+              )?.usuario
+            }
+          </p>
+
+        </div>
+
+        <button
+          className="delete-btn"
+
+          onClick={() =>
+            eliminarUsuario(
+              parseInt(
+                usuarioGestion
+              )
+            )
+          }
+        >
+          🗑️
+        </button>
+
+      </div>
+    )}
+ 
+  </div>
+        </>
+      )}
+      
+{pantallaActiva ===
+  "informes" && (
+
+<div className="admin-panel">
+
+  <h2>
+    📝 Informe mensual
+  </h2>
+
+  <label>
+    Participó en predicación
+  </label>
+
+  <select
+    value={participa}
+
+    onChange={(e) =>
+      setParticipa(
         e.target.value
-       )
-       }
-     >
+      )
+    }
+  >
 
-       <option value="">
-       Seleccionar usuario
-       </option>
+    <option value={true}>
+      Sí
+    </option>
 
-     {usuarios.map((u) => (
+    <option value={false}>
+      No
+    </option>
+
+  </select>
+
+  <input
+    type="number"
+
+    placeholder="Horas"
+
+    value={horas}
+
+    onChange={(e) =>
+      setHoras(
+        e.target.value
+      )
+    }
+  />
+
+  <input
+    type="number"
+
+    placeholder="Cursos"
+
+    value={cursos}
+
+    onChange={(e) =>
+      setCursos(
+        e.target.value
+      )
+    }
+  />
+
+  <textarea
+    placeholder="Comentarios"
+
+    value={comentarioInforme}
+
+    onChange={(e) =>
+      setComentarioInforme(
+        e.target.value
+      )
+    }
+  />
+
+  <button
+    className="add-btn"
+
+    onClick={() => {
+
+      const nuevoInforme = {
+
+        usuario:
+          user.nombre,
+
+        horas,
+
+        cursos,
+
+        participa,
+
+        comentario:
+          comentarioInforme
+      };
+
+      setInformes([
+        ...informes,
+        nuevoInforme
+      ]);
+
+      setHoras("");
+
+      setCursos("");
+
+      setComentarioInforme("");
+
+      alert(
+        "Informe enviado"
+      );
+    }}
+  >
+    📝 Enviar informe
+  </button>
+
+</div>
+)}
+
+     {pantallaActiva === "calendario" && (
+   <div className="admin-panel">
+
+   <h2>
+    📅 Calendario
+   </h2>
+    
+    {user?.rol ===
+  "admin" && (
+
+<div className="admin-panel filtro-panel">
+
+  <h2>
+    🔎 Filtrar
+  </h2>
+
+  <select
+    value={filtroUsuario}
+
+    onChange={(e) =>
+      setFiltroUsuario(
+        e.target.value
+      )
+    }
+  >
+
+    <option value="">
+      Seleccionar
+    </option>
+
+    <option value="todos">
+      Todas
+    </option>
+
+    {usuarios.map((u) => (
 
       <option
         key={u.id}
@@ -1286,115 +1775,105 @@ ${emojisCategorias[
 
   </select>
 
-  {usuarioGestion && (
-
-    <div className="user-row">
-
-      <div>
-
-        <strong>
-          {
-            usuarios.find(
-              (u) =>
-                u.id ===
-                parseInt(
-                  usuarioGestion
-                )
-            )?.nombre
-          }
-        </strong>
-
-        <p>
-          @
-          {
-            usuarios.find(
-              (u) =>
-                u.id ===
-                parseInt(
-                  usuarioGestion
-                )
-            )?.usuario
-          }
-        </p>
-
-      </div>
-
-      <button
-        className="delete-btn"
-
-        onClick={() =>
-          eliminarUsuario(
-            parseInt(
-              usuarioGestion
-            )
-          )
-        }
-      >
-        🗑️
-      </button>
-
-    </div>
-   )}
-
-  </div>
-
-          <div className="admin-panel">
-
-            <h2>
-              🔎 Filtrar
-            </h2>
-
-            <select
-              value={filtroUsuario}
-
-              onChange={(e) =>
-                setFiltroUsuario(
-                  e.target.value
-                )
-              }
-            >
-
-              <option value="todos">
-                Todas
-              </option>
-
-              {usuarios.map((u) => (
-
-                <option
-                  key={u.id}
-                  value={u.id}
-                >
-                  {u.nombre}
-                </option>
-
-              ))}
-
-            </select>
-
-          </div>
-        </>
-      )}
-     
-   <div className="admin-panel">
-
-   <h2>
-    📅 Calendario
-   </h2>
+</div>
+)}
+    
   
 <button
-  className="add-btn"
+ className="add-btn export-btn"
 
   onClick={exportarPDF}
 >
   📄 Exportar PDF
 </button>
 
+{asignacionesFiltradas
+  .length > 0 && (
 
+<>
+  <h2 className="section-title">
+    📋 Asignaciones
+  </h2>
+<div className="cards-grid">
+  {asignacionesFiltradas.map(
+    (a) => (
+
+    <div
+      key={a.id}
+      className="card"
+    >
+
+      <h3>
+        {a.parte}
+      </h3>
+
+      <p>
+        📅 {
+          formatearFecha(
+            a.fecha
+          )
+        }
+      </p>
+
+      
+
+<p className="usuarios-card">
+
+👥 {
+
+a.usuarios_ids
+
+? a.usuarios_ids
+.map((id) => {
+
+return usuarios.find(
+(u) =>
+u.id === id
+)?.nombre;
+})
+
+.join(" + ")
+
+: usuarios.find(
+(u) =>
+u.id ===
+a.usuario_id
+)?.nombre
+}
+</p>
+
+{user?.rol ===
+  "admin" && (
+
+<button
+  className="
+    delete-btn
+    delete-card-btn
+  "
+
+  onClick={() =>
+    eliminarAsignacion(
+      a.id
+    )
+  }
+>
+  🗑️ Eliminar
+</button>
+)}
+
+    </div>
+  ))}
+
+  </div>
+</>
+)}
    <FullCalendar
-    plugins={[
-      dayGridPlugin,
-      timeGridPlugin 
-    ]}
+  firstDay={1}
+
+  plugins={[
+    dayGridPlugin,
+    timeGridPlugin
+  ]}
     
 eventClick={(info) => {
 
@@ -1417,7 +1896,7 @@ eventClick={(info) => {
    />
 
    </div>
-   
+   )}
    
  {eventoSeleccionado && (
 
@@ -1502,7 +1981,24 @@ eventClick={(info) => {
         }
 
       </p>
+{user?.rol ===
+  "admin" && (
 
+<button
+  className="
+    delete-btn
+    delete-card-btn
+  "
+
+  onClick={() =>
+    eliminarAsignacion(
+  eventoSeleccionado.id
+)
+  }
+>
+  🗑️ Eliminar
+</button>
+)}
       <button
         className="save-btn"
 
@@ -1541,135 +2037,11 @@ eventClick={(info) => {
   </div>
 )}
 
-
-
-      <h2 className="section-title">
-        📅 Asignaciones
-      </h2>
-
-      {asignacionesFiltradas.map((a) => (
-
-        <div
-          key={a.id}
-          className="card"
-        >
-
-          {editandoId === a.id ? (
-
-            <>
-
-              <input
-                value={editarParte}
-                onChange={(e) =>
-                  setEditarParte(
-                    e.target.value
-                  )
-                }
-              />
-
-              <input
-                type="date"
-                value={editarFecha}
-                onChange={(e) =>
-                  setEditarFecha(
-                    e.target.value
-                  )
-                }
-              />
-
-              <button
-                className="save-btn"
-                onClick={() =>
-                  guardarEdicion(a)
-                }
-              >
-                💾 Guardar
-              </button>
-
-            </>
-
-          ) : (
-
-            <>
-
-              <h3>
-                {a.parte}
-              </h3>
-
-              <p>
-                📅 {
-                  formatearFecha(
-                    a.fecha
-                  )
-                }
-              </p>
-
-              <p>
-             
-              👥 {
-
-               a.usuarios_ids
-
-                ? a.usuarios_ids
-        .map((id) => {
-
-          return usuarios.find(
-            (u) =>
-              u.id === id
-          )?.nombre;
-        })
-
-        .join(" + ")
-
-    : usuarios.find(
-        (u) =>
-          u.id ===
-          a.usuario_id
-      )?.nombre
-            }
-
-
-              </p>
-
-              {user.rol ===
-                "admin" && (
-
-                <>
-
-                  <button
-                    className="edit-btn"
-                    onClick={() =>
-                      iniciarEdicion(a)
-                    }
-                  >
-                    ✏️ Editar
-                  </button>
-
-                  <button
-                    className="delete-btn"
-                    onClick={() =>
-                      eliminarAsignacion(
-                        a.id
-                      )
-                    }
-                  >
-                    🗑️ Eliminar
-                  </button>
-
-                </>
-
-              )}
-
-            </>
-
-          )}
-
-        </div>
-
-      ))}
-
-    </div>
+      </div>
+    
   );
+  
 }
+
 
 export default App;
