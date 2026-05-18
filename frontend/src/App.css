@@ -308,6 +308,57 @@ button {
   color: white;
 }
 
+.menu-mobile {
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 999;
+
+  width: 100%;
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  background: #18181b;
+
+  padding: 15px 0;
+
+  margin-bottom: 25px;
+}
+
+.menu-mobile button {
+
+  width: 60px;
+
+  height: 60px;
+
+  border-radius: 18px;
+
+  background: #27272a;
+
+  color: white;
+
+  font-size: 24px;
+
+  border: 1px solid #ffffff20;
+
+  transition: 0.2s;
+}
+
+.menu-mobile button:hover {
+
+  transform: scale(1.05);
+
+  background: #3f3f46;
+}
+
+
+
 
 }
 

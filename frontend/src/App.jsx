@@ -106,6 +106,10 @@ const [segundoUsuario,
  const [eventoSeleccionado,
   setEventoSeleccionado] =
   useState(null);
+ 
+ const [pantallaActiva,
+  setPantallaActiva] =
+  useState("inicio");
 
 
  const categorias = {
@@ -923,6 +927,51 @@ ${emojisCategorias[
 
   return (
     <div className="page">
+  <div className="menu-mobile">
+
+  <button
+    onClick={() =>
+      setPantallaActiva(
+        "inicio"
+      )
+    }
+  >
+    🏠
+  </button>
+
+  <button
+    onClick={() =>
+      setPantallaActiva(
+        "calendario"
+      )
+    }
+  >
+    📅
+  </button>
+
+  <button
+    onClick={() =>
+      setPantallaActiva(
+        "nueva"
+      )
+    }
+  >
+    ➕
+  </button>
+
+  <button
+    onClick={() =>
+      setPantallaActiva(
+        "usuarios"
+      )
+    }
+  >
+    👥
+  </button>
+
+</div>
+
+
 
       <div className="header">
 
