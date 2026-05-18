@@ -4,7 +4,9 @@ import FullCalendar from
 "@fullcalendar/react";
 import dayGridPlugin from
 "@fullcalendar/daygrid";
-
+import timeGridPlugin
+from "@fullcalendar/timegrid";
+import jsPDF from "jspdf";
 
 
 function App() {
@@ -49,6 +51,16 @@ const [segundoUsuario,
   const [nuevaFecha,
     setNuevaFecha] =
     useState("");
+  
+ const [nota,
+   setNota] =
+   useState("");
+
+ 
+ const [importante,
+  setImportante] =
+  useState(false);
+
 
   // EDITAR
   const [editandoId,
@@ -330,7 +342,12 @@ if (repetida) {
       )
     ],
 
+     
+   categoria:
+   categoriaSeleccionada,
 
+    nota,
+    importante,
 
         parte: nuevaParte,
 
@@ -358,14 +375,15 @@ if (repetida) {
       setNuevaParte("");
 
       setNuevaFecha("");
-
+      setNota("");
+      setImportante(false);
       setUsuarioSeleccionado("");
 
       alert(
         "Asignación agregada"
       );
     };
-
+  
   // ELIMINAR USUARIO
 const eliminarUsuario =
   async (id) => {
@@ -582,7 +600,207 @@ const crearUsuario =
             )
         );
   
-  
+ 
+const coloresCategorias = {
+
+  "Entre semana":
+    "#2563eb",
+
+  "Fin de semana":
+    "#16a34a",
+
+  "Audio y video":
+    "#9333ea",
+
+  "Acomodadores":
+    "#ea580c"
+};
+
+
+ const emojisCategorias = {
+
+  "Entre semana":
+    "📖",
+
+  "Fin de semana":
+    "📅",
+
+  "Audio y video":
+    "🎧",
+
+  "Acomodadores":
+    "🚪"
+};
+
+const generarMensajeWhatsApp =
+  (evento) => {
+
+    const nombres =
+
+      evento.usuarios_ids
+
+        ? evento.usuarios_ids
+            .map((id) => {
+
+              return usuarios.find(
+                (u) =>
+                  u.id === id
+              )?.nombre;
+            })
+
+            .join(" + ")
+
+        : usuarios.find(
+            (u) =>
+              u.id ===
+              evento.usuario_id
+          )?.nombre;
+
+    return encodeURIComponent(
+
+`Hola 🙂 
+
+Te toca:
+
+${evento.parte}
+
+📅 ${formatearFecha(
+  evento.fecha
+)}
+
+👥 ${nombres}
+
+${
+  evento.nota
+    ? `📝 ${evento.nota}`
+    : ""
+}`
+    );
+  };
+
+ const exportarPDF = () => {
+
+  const doc = new jsPDF();
+
+  doc.setFontSize(22);
+
+  doc.text(
+    "Programa mensual",
+    20,
+    20
+  );
+
+  let y = 40;
+
+  asignacionesFiltradas.forEach(
+    (a) => {
+
+      const nombres =
+
+        a.usuarios_ids
+
+          ? a.usuarios_ids
+              .map((id) => {
+
+                return usuarios.find(
+                  (u) =>
+                    u.id === id
+                )?.nombre;
+              })
+
+              .join(" + ")
+
+          : usuarios.find(
+              (u) =>
+                u.id ===
+                a.usuario_id
+            )?.nombre;
+
+      // CUADRO
+
+      doc.roundedRect(
+        15,
+        y - 8,
+        180,
+        35,
+        3,
+        3
+      );
+
+      // TITULO
+
+      doc.setFontSize(14);
+
+      doc.text(
+
+`${a.importante ? "⭐ " : ""}
+${a.categoria || "General"}`,
+
+        20,
+        y
+      );
+
+      // FECHA
+
+      doc.setFontSize(11);
+
+      doc.text(
+        `📅 ${formatearFecha(
+          a.fecha
+        )}`,
+        20,
+        y + 8
+      );
+
+      // PARTE
+
+      doc.text(
+        `📌 ${a.parte}`,
+        20,
+        y + 16
+      );
+
+      // USUARIOS
+
+      doc.text(
+        `👥 ${nombres}`,
+        20,
+        y + 24
+      );
+
+      // NOTA
+
+      if (a.nota) {
+
+        doc.setFontSize(10);
+
+        doc.text(
+          `📝 ${a.nota}`,
+          20,
+          y + 32
+        );
+
+        y += 12;
+      }
+
+      y += 45;
+
+      // NUEVA PAGINA
+
+      if (y > 250) {
+
+        doc.addPage();
+
+        y = 20;
+      }
+    }
+  );
+
+  doc.save(
+    "programa-mensual.pdf"
+  );
+};
+
   
  const eventosCalendario =
 
@@ -591,7 +809,18 @@ const crearUsuario =
 
       title:
 
-        `${a.parte} - ` +
+        
+      
+
+`${a.importante ? "⭐ " : ""}
+${emojisCategorias[
+  a.categoria
+] || "📌"} ${a.parte} - ` +
+
+
+
+
+
 
         (
 
@@ -616,6 +845,23 @@ const crearUsuario =
         ),
 
       date: a.fecha,
+      
+    backgroundColor:
+  coloresCategorias[
+    a.categoria
+  ] || "#2563eb",
+
+    borderColor:
+  coloresCategorias[
+    a.categoria
+  ] || "#2563eb",
+ 
+    borderWidth:
+   a.importante
+    ? 4
+    : 1,
+
+
 
       extendedProps: {
         asignacion: a
@@ -844,6 +1090,41 @@ const crearUsuario =
                 )
               }
             />
+          
+      <input
+      type="text"
+
+      placeholder="Notas"
+
+     value={nota}
+
+     onChange={(e) =>
+       setNota(
+      e.target.value
+      )
+      }
+      />
+      
+    <label>
+
+    <input
+    type="checkbox"
+
+    checked={importante}
+
+    onChange={(e) =>
+      setImportante(
+        e.target.checked
+      )
+    }
+   />
+
+    {" "}
+   ⭐ Evento importante
+
+   </label>
+
+
 
             <button
               className="add-btn"
@@ -1050,10 +1331,20 @@ const crearUsuario =
    <h2>
     📅 Calendario
    </h2>
+  
+<button
+  className="add-btn"
+
+  onClick={exportarPDF}
+>
+  📄 Exportar PDF
+</button>
+
 
    <FullCalendar
     plugins={[
-      dayGridPlugin
+      dayGridPlugin,
+      timeGridPlugin 
     ]}
     
 eventClick={(info) => {
@@ -1117,6 +1408,24 @@ eventClick={(info) => {
         <strong>
           Usuarios:
         </strong>
+        
+      {eventoSeleccionado.nota && (
+
+  <p>
+
+    <strong>
+      Nota:
+    </strong>
+
+    {" "}
+
+    {
+      eventoSeleccionado.nota
+    }
+
+    </p>
+    )}
+
 
         {" "}
 
@@ -1156,6 +1465,27 @@ eventClick={(info) => {
       >
         Cerrar
       </button>
+      
+<button
+  className="add-btn"
+
+  onClick={() => {
+
+    const mensaje =
+
+      generarMensajeWhatsApp(
+        eventoSeleccionado
+      );
+
+    window.open(
+      `https://wa.me/?text=${mensaje}`,
+      "_blank"
+    );
+  }}
+>
+  📲 WhatsApp
+</button>
+
 
     </div>
 
