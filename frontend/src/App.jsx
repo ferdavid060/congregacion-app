@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import FullCalendar from
+"@fullcalendar/react";
+import dayGridPlugin from
+"@fullcalendar/daygrid";
+
+
 
 function App() {
 
@@ -25,10 +31,20 @@ function App() {
   const [usuarioSeleccionado,
     setUsuarioSeleccionado] =
     useState("");
+ 
+const [segundoUsuario,
+  setSegundoUsuario] =
+  useState("");
+
 
   const [nuevaParte,
     setNuevaParte] =
     useState("");
+  
+ 
+ const [categoriaSeleccionada,
+  setCategoriaSeleccionada] =
+  useState("");
 
   const [nuevaFecha,
     setNuevaFecha] =
@@ -68,6 +84,51 @@ function App() {
   const [nuevoRol,
     setNuevoRol] =
     useState("miembro");
+  
+
+  const [usuarioGestion,
+    setUsuarioGestion] =
+   useState("");
+
+
+ const [eventoSeleccionado,
+  setEventoSeleccionado] =
+  useState(null);
+
+
+ const categorias = {
+
+  "Entre semana": [
+    "Lectura bíblica",
+    "Perlas escondidas",
+    "Estudiante",
+    "Empiece conversaciones",
+    "Haga revisitas",
+    "Haga discípulos",
+    "Explique sus creencias",
+    "Discurso",
+    "Oración"
+  ],
+
+  "Fin de semana": [
+    "Presidente",
+    "Lectura",
+    "Oración final"
+  ],
+
+  "Audio y video": [
+    "Consola",
+    "Micrófonos",
+    "Zoom"
+  ],
+
+  "Acomodadores": [
+    "Entrada",
+    "Estacionamiento",
+    "Salón"
+  ]
+   };
+
 
   // LOGIN
   const login = async () => {
@@ -186,14 +247,90 @@ function App() {
 
         return;
       }
+     
+   // VERIFICAR REPETICION
+
+   const repetida =
+   asignaciones.find((a) => {
+
+    // NUEVA FECHA
+    const nuevaFechaObj =
+      new Date(nuevaFecha);
+
+    // FECHA EXISTENTE
+    const fechaExistente =
+      new Date(a.fecha);
+
+    // MISMO MES
+    const mismoMes =
+
+      nuevaFechaObj.getMonth() ===
+      fechaExistente.getMonth()
+
+      &&
+
+      nuevaFechaObj.getFullYear() ===
+      fechaExistente.getFullYear();
+
+    // USUARIO INCLUIDO
+    const mismoUsuario =
+
+      a.usuarios_ids
+
+        ? a.usuarios_ids.includes(
+            parseInt(
+              usuarioSeleccionado
+            )
+          )
+
+        : a.usuario_id ===
+          parseInt(
+            usuarioSeleccionado
+          );
+
+    // MISMA TAREA
+    const mismaParte =
+      a.parte === nuevaParte;
+
+    return (
+      mismoMes &&
+      mismoUsuario &&
+      mismaParte
+    );
+  });
+
+if (repetida) {
+
+  alert(
+    "⚠️ Este usuario ya tiene esta asignación este mes"
+  );
+  }
+
 
       const nueva = {
 
         id: Date.now(),
 
-        usuario_id: parseInt(
-          usuarioSeleccionado
-        ),
+        
+     usuarios_ids: segundoUsuario
+
+  ? [
+      parseInt(
+        usuarioSeleccionado
+      ),
+
+      parseInt(
+        segundoUsuario
+      )
+    ]
+
+  : [
+      parseInt(
+        usuarioSeleccionado
+      )
+    ],
+
+
 
         parte: nuevaParte,
 
@@ -229,77 +366,120 @@ function App() {
       );
     };
 
-  // CREAR USUARIO
-  const crearUsuario =
-    async () => {
+  // ELIMINAR USUARIO
+const eliminarUsuario =
+  async (id) => {
 
-      if (
-        !nuevoNombre ||
-        !nuevoUsuario ||
-        !nuevoPassword
-      ) {
+    if (id === user.id) {
 
-        alert(
-          "Completa todos los campos"
-        );
+      alert(
+        "No puedes eliminarte a ti mismo"
+      );
 
-        return;
+      return;
+    }
+
+    await fetch(
+      `https://congregacion-app.onrender.com/usuarios/${id}`,
+      {
+        method: "DELETE"
       }
+    );
 
-      const nuevo = {
+    setUsuarios(
+      usuarios.filter(
+        (u) => u.id !== id
+      )
+    );
 
-        id: Date.now(),
+    setAsignaciones(
+      asignaciones.filter((a) => {
 
-        nombre: nuevoNombre,
+        if (a.usuarios_ids) {
 
-        usuario: nuevoUsuario,
+          return !a.usuarios_ids.includes(id);
+        }
 
-        password: nuevoPassword,
+        return a.usuario_id !== id;
+      })
+    );
 
-        rol: nuevoRol
-      };
+    alert("Usuario eliminado");
+  };
 
-      const respuesta =
-        await fetch(
-          "https://congregacion-app.onrender.com/usuarios",
-          {
-            method: "POST",
+// CREAR USUARIO
+const crearUsuario =
+  async () => {
 
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
+    if (
+      !nuevoNombre ||
+      !nuevoUsuario ||
+      !nuevoPassword
+    ) {
 
-            body: JSON.stringify(
-              nuevo
-            )
-          }
-        );
+      alert(
+        "Completa todos los campos"
+      );
 
-      if (!respuesta.ok) {
+      return;
+    }
 
-        alert(
-          "Ese usuario ya existe"
-        );
+    const nuevo = {
 
-        return;
-      }
+      id: Date.now(),
 
-      setUsuarios([
-        ...usuarios,
-        nuevo
-      ]);
+      nombre: nuevoNombre,
 
-      setNuevoNombre("");
+      usuario: nuevoUsuario,
 
-      setNuevoUsuario("");
+      password: nuevoPassword,
 
-      setNuevoPassword("");
-
-      setNuevoRol("miembro");
-
-      alert("Usuario creado");
+      rol: nuevoRol
     };
+
+    const respuesta =
+      await fetch(
+        "https://congregacion-app.onrender.com/usuarios",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify(
+            nuevo
+          )
+        }
+      );
+
+    if (!respuesta.ok) {
+
+      alert(
+        "Ese usuario ya existe"
+      );
+
+      return;
+    }
+
+    setUsuarios([
+      ...usuarios,
+      nuevo
+    ]);
+
+    setNuevoNombre("");
+
+    setNuevoUsuario("");
+
+    setNuevoPassword("");
+
+    setNuevoRol("miembro");
+
+    alert("Usuario creado");
+  };
+
+
 
   // ELIMINAR
   const eliminarAsignacion =
@@ -401,6 +581,51 @@ function App() {
               filtroUsuario
             )
         );
+  
+  
+  
+ const eventosCalendario =
+
+  asignacionesFiltradas.map(
+    (a) => ({
+
+      title:
+
+        `${a.parte} - ` +
+
+        (
+
+          a.usuarios_ids
+
+            ? a.usuarios_ids
+                .map((id) => {
+
+                  return usuarios.find(
+                    (u) =>
+                      u.id === id
+                  )?.nombre;
+                })
+
+                .join(" + ")
+
+            : usuarios.find(
+                (u) =>
+                  u.id ===
+                  a.usuario_id
+              )?.nombre
+        ),
+
+      date: a.fecha,
+
+      extendedProps: {
+        asignacion: a
+      }
+
+    })
+  );
+
+
+
 
   // LOGIN SCREEN
   if (!user) {
@@ -513,16 +738,102 @@ function App() {
               ))}
 
             </select>
+           
+            <select
+  value={segundoUsuario}
 
-            <input
-              placeholder="Parte"
-              value={nuevaParte}
-              onChange={(e) =>
-                setNuevaParte(
-                  e.target.value
-                )
-              }
-            />
+  onChange={(e) =>
+    setSegundoUsuario(
+      e.target.value
+    )
+  }
+>
+
+  <option value="">
+    Segundo usuario (opcional)
+  </option>
+
+  {usuarios.map((u) => (
+
+    <option
+      key={u.id}
+      value={u.id}
+    >
+      {u.nombre}
+    </option>
+
+      ))}
+
+     </select>
+
+
+            
+            <select
+           value={
+              categoriaSeleccionada
+               }
+
+          onChange={(e) => {
+
+         setCategoriaSeleccionada(
+          e.target.value
+         );
+
+            setNuevaParte("");
+       }}
+      > 
+
+  <option value="">
+    Seleccionar categoría
+  </option>
+
+  {Object.keys(categorias)
+    .map((cat) => (
+
+      <option
+        key={cat}
+        value={cat}
+      >
+        {cat}
+      </option>
+
+  ))}
+</select>
+
+{categoriaSeleccionada && (
+
+  <select
+    value={nuevaParte}
+
+    onChange={(e) =>
+      setNuevaParte(
+        e.target.value
+      )
+    }
+  >
+
+    <option value="">
+      Seleccionar tarea
+    </option>
+
+    {
+      categorias[
+        categoriaSeleccionada
+      ].map((tarea) => (
+
+        <option
+          key={tarea}
+          value={tarea}
+        >
+          {tarea}
+        </option>
+
+      ))
+     }
+
+      </select>
+      )}
+
 
             <input
               type="date"
@@ -610,6 +921,92 @@ function App() {
             </button>
 
           </div>
+           
+         
+        <div className="admin-panel">
+
+       <h2>
+       👥 Gestionar usuario
+       </h2>
+
+        <select
+         value={usuarioGestion}
+
+        onChange={(e) =>
+       setUsuarioGestion(
+        e.target.value
+       )
+       }
+     >
+
+       <option value="">
+       Seleccionar usuario
+       </option>
+
+     {usuarios.map((u) => (
+
+      <option
+        key={u.id}
+        value={u.id}
+      >
+        {u.nombre}
+      </option>
+
+    ))}
+
+  </select>
+
+  {usuarioGestion && (
+
+    <div className="user-row">
+
+      <div>
+
+        <strong>
+          {
+            usuarios.find(
+              (u) =>
+                u.id ===
+                parseInt(
+                  usuarioGestion
+                )
+            )?.nombre
+          }
+        </strong>
+
+        <p>
+          @
+          {
+            usuarios.find(
+              (u) =>
+                u.id ===
+                parseInt(
+                  usuarioGestion
+                )
+            )?.usuario
+          }
+        </p>
+
+      </div>
+
+      <button
+        className="delete-btn"
+
+        onClick={() =>
+          eliminarUsuario(
+            parseInt(
+              usuarioGestion
+            )
+          )
+        }
+      >
+        🗑️
+      </button>
+
+    </div>
+   )}
+
+  </div>
 
           <div className="admin-panel">
 
@@ -647,6 +1044,125 @@ function App() {
           </div>
         </>
       )}
+     
+   <div className="admin-panel">
+
+   <h2>
+    📅 Calendario
+   </h2>
+
+   <FullCalendar
+    plugins={[
+      dayGridPlugin
+    ]}
+    
+eventClick={(info) => {
+
+  setEventoSeleccionado(
+    info.event.extendedProps
+      .asignacion
+  );
+   }}
+
+
+    initialView="dayGridMonth"
+
+    height="auto"
+
+    locale="es"
+
+    events={
+      eventosCalendario
+    }
+   />
+
+   </div>
+   
+   
+ {eventoSeleccionado && (
+
+  <div className="modal-overlay">
+
+    <div className="modal">
+
+      <h2>
+        📋 Detalle
+      </h2>
+
+      <p>
+        <strong>
+          Tarea:
+        </strong>
+
+        {" "}
+        {
+          eventoSeleccionado.parte
+        }
+      </p>
+
+      <p>
+        <strong>
+          Fecha:
+        </strong>
+
+        {" "}
+        {
+          formatearFecha(
+            eventoSeleccionado.fecha
+          )
+        }
+      </p>
+
+      <p>
+        <strong>
+          Usuarios:
+        </strong>
+
+        {" "}
+
+        {
+          eventoSeleccionado
+            .usuarios_ids
+
+            ? eventoSeleccionado
+                .usuarios_ids
+                .map((id) => {
+
+                  return usuarios.find(
+                    (u) =>
+                      u.id === id
+                  )?.nombre;
+                })
+
+                .join(" + ")
+
+            : usuarios.find(
+                (u) =>
+                  u.id ===
+                  eventoSeleccionado.usuario_id
+              )?.nombre
+        }
+
+      </p>
+
+      <button
+        className="save-btn"
+
+        onClick={() =>
+          setEventoSeleccionado(
+            null
+          )
+        }
+      >
+        Cerrar
+      </button>
+
+    </div>
+
+  </div>
+)}
+
+
 
       <h2 className="section-title">
         📅 Asignaciones
@@ -710,15 +1226,30 @@ function App() {
               </p>
 
               <p>
-                👤 {
-                  (
-                    usuarios.find(
-                      (u) =>
-                        u.id ===
-                        a.usuario_id
-                    ) || {}
-                  ).nombre
-                }
+             
+              👥 {
+
+               a.usuarios_ids
+
+                ? a.usuarios_ids
+        .map((id) => {
+
+          return usuarios.find(
+            (u) =>
+              u.id === id
+          )?.nombre;
+        })
+
+        .join(" + ")
+
+    : usuarios.find(
+        (u) =>
+          u.id ===
+          a.usuario_id
+      )?.nombre
+            }
+
+
               </p>
 
               {user.rol ===

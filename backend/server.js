@@ -154,6 +154,38 @@ app.post(
   }
 );
 
+// ELIMINAR USUARIO
+app.delete(
+  "/usuarios/:id",
+  (req, res) => {
+
+    const id = parseInt(
+      req.params.id
+    );
+
+    usuarios = usuarios.filter(
+      (u) => u.id !== id
+    );
+
+    // ELIMINAR ASIGNACIONES
+    asignaciones =
+      asignaciones.filter(
+        (a) =>
+          a.usuario_id !== id
+      );
+
+    guardarUsuarios();
+
+    guardarAsignaciones();
+
+    res.json({
+      mensaje:
+        "Usuario eliminado"
+    });
+  }
+);
+
+
 // ELIMINAR ASIGNACION
 app.delete(
   "/asignaciones/:id",
