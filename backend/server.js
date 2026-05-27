@@ -1,9 +1,40 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
-
 const app = express();
+require("dotenv").config();
+const { Pool } =
+  require("pg");
 
+const pool = new Pool({
+
+  connectionString:
+    process.env
+      .DATABASE_URL,
+
+  ssl: {
+    rejectUnauthorized:
+      false
+  }
+});
+pool.connect()
+
+  .then(() => {
+
+    console.log(
+      "🔥 PostgreSQL conectado"
+    );
+  })
+
+  .catch((err) => {
+
+    console.log(
+      "❌ Error PostgreSQL",
+      err
+    );
+  }); 
+
+  
 app.use(cors());
 app.use(express.json());
 
@@ -46,73 +77,222 @@ const guardarAsignaciones =
   };
 
 // LOGIN
-app.post("/login", (req, res) => {
+app.post(
+  "/login",
 
-  const { usuario, password } =
-    req.body;
+  async (
+    req,
+    res
+  ) => {
 
-  const user = usuarios.find(
-    (u) =>
-      u.usuario === usuario &&
-      u.password === password
-  );
+    try {
 
-  if (user) {
+      const {
+        usuario,
+        password
+      } = req.body;
 
-    res.json(user);
+      const result =
+        await pool.query(
 
-  } else {
+`SELECT * FROM usuarios
+ WHERE usuario = $1
+ AND password = $2`,
 
-    res.status(401).json({
-      mensaje:
-        "Credenciales incorrectas"
-    });
+          [
+            usuario,
+            password
+          ]
+        );
 
+      if (
+        result.rows.length === 0
+      ) {
+
+        return res
+          .status(401)
+          .json({
+            error:
+              "Usuario o contraseña incorrectos"
+          });
+      }
+
+      res.json(
+        result.rows[0]
+      );
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error login"
+      });
+    }
   }
-});
+);
 
 // OBTENER USUARIOS
-app.get("/usuarios", (req, res) => {
+app.get(
+  "/usuarios",
 
-  res.json(usuarios);
-});
+  async (
+    req,
+    res
+  ) => {
+
+    try {
+
+      const result =
+        await pool.query(
+          "SELECT * FROM usuarios"
+        );
+
+      res.json(
+        result.rows
+      );
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error al obtener usuarios"
+      });
+    }
+  }
+);
 
 // CREAR USUARIO
-app.post("/usuarios", (req, res) => {
+app.post(
+  "/usuarios",
 
-  const nuevoUsuario =
-    req.body;
+  async (
+    req,
+    res
+  ) => {
 
-  // VALIDAR USUARIO REPETIDO
-  const existe = usuarios.find(
-    (u) =>
-      u.usuario ===
-      nuevoUsuario.usuario
-  );
+    try {
 
-  if (existe) {
+      const {
+        id,
+        nombre,
+        usuario,
+        password,
+        rol
+      } = req.body;
 
-    return res.status(400).json({
-      mensaje:
-        "El usuario ya existe"
-    });
+      const existe =
+        await pool.query(
+
+`SELECT * FROM usuarios
+ WHERE usuario = $1`,
+
+          [usuario]
+        );
+
+      if (
+        existe.rows.length > 0
+      ) {
+
+        return res
+          .status(400)
+          .json({
+            mensaje:
+              "El usuario ya existe"
+          });
+      }
+
+      await pool.query(
+
+`INSERT INTO usuarios
+(
+  id,
+  nombre,
+  usuario,
+  password,
+  rol
+)
+
+VALUES
+(
+  $1,
+  $2,
+  $3,
+  $4,
+  $5
+)`,
+
+        [
+          id,
+          nombre,
+          usuario,
+          password,
+          rol
+        ]
+      );
+
+      res.json({
+        mensaje:
+          "Usuario creado"
+      });
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error creando usuario"
+      });
+    }
   }
-
-  usuarios.push(nuevoUsuario);
-
-  guardarUsuarios();
-
-  res.json({
-    mensaje:
-      "Usuario creado"
-  });
-});
+);
 
 // TODAS LAS ASIGNACIONES
-app.get("/asignaciones", (req, res) => {
+app.get(
+  "/asignaciones",
 
-  res.json(asignaciones);
-});
+  async (
+    req,
+    res
+  ) => {
+
+    try {
+
+      const result =
+        await pool.query(
+
+`SELECT * FROM asignaciones
+ ORDER BY fecha ASC`
+
+        );
+
+      res.json(
+        result.rows
+      );
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error obteniendo asignaciones"
+      });
+    }
+  }
+);
 
 // ASIGNACIONES POR USUARIO
 app.get(
@@ -136,21 +316,77 @@ app.get(
 // AGREGAR ASIGNACION
 app.post(
   "/asignaciones",
-  (req, res) => {
 
-    const nuevaAsignacion =
-      req.body;
+  async (
+    req,
+    res
+  ) => {
 
-    asignaciones.push(
-      nuevaAsignacion
-    );
+    try {
 
-    guardarAsignaciones();
+      const {
 
-    res.json({
-      mensaje:
-        "Asignación guardada"
-    });
+        id,
+        parte,
+        fecha,
+        categoria,
+        nota,
+        importante,
+        usuarios_ids
+
+      } = req.body;
+
+      await pool.query(
+
+`INSERT INTO asignaciones
+(
+  id,
+  parte,
+  fecha,
+  categoria,
+  nota,
+  importante,
+  usuarios_ids
+)
+
+VALUES
+(
+  $1,
+  $2,
+  $3,
+  $4,
+  $5,
+  $6,
+  $7
+)`,
+
+        [
+          id,
+          parte,
+          fecha,
+          categoria,
+          nota,
+          importante,
+          usuarios_ids
+        ]
+      );
+
+      res.json({
+        mensaje:
+          "Asignación guardada"
+      });
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error creando asignación"
+      });
+    }
   }
 );
 
@@ -189,23 +425,43 @@ app.delete(
 // ELIMINAR ASIGNACION
 app.delete(
   "/asignaciones/:id",
-  (req, res) => {
 
-    const id = parseInt(
-      req.params.id
-    );
+  async (
+    req,
+    res
+  ) => {
 
-    asignaciones =
-      asignaciones.filter(
-        (a) => a.id !== id
+    try {
+
+      const id =
+        parseInt(
+          req.params.id
+        );
+
+      await pool.query(
+
+`DELETE FROM asignaciones
+ WHERE id = $1`,
+
+        [id]
       );
 
-    guardarAsignaciones();
+      res.json({
+        mensaje:
+          "Asignación eliminada"
+      });
 
-    res.json({
-      mensaje:
-        "Asignación eliminada"
-    });
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error eliminando asignación"
+      });
+    }
   }
 );
 
