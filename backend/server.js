@@ -496,7 +496,116 @@ app.put(
     });
   }
 );
+app.get(
+  "/informes",
 
+  async (
+    req,
+    res
+  ) => {
+
+    try {
+
+      const result =
+        await pool.query(
+
+`SELECT * FROM informes
+ ORDER BY id DESC`
+
+        );
+
+      res.json(
+        result.rows
+      );
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error obteniendo informes"
+      });
+    }
+  }
+);
+app.post(
+  "/informes",
+
+  async (
+    req,
+    res
+  ) => {
+
+    try {
+
+      const {
+
+        id,
+        usuario,
+        usuario_id,
+        horas,
+        cursos,
+        participa,
+        comentario
+
+      } = req.body;
+
+      await pool.query(
+
+`INSERT INTO informes
+(
+  id,
+  usuario,
+  usuario_id,
+  horas,
+  cursos,
+  participa,
+  comentario
+)
+
+VALUES
+(
+  $1,
+  $2,
+  $3,
+  $4,
+  $5,
+  $6,
+  $7
+)`,
+
+        [
+          id,
+          usuario,
+          usuario_id,
+          horas,
+          cursos,
+          participa,
+          comentario
+        ]
+      );
+
+      res.json({
+        mensaje:
+          "Informe guardado"
+      });
+
+    } catch (error) {
+
+      console.log(
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Error guardando informe"
+      });
+    }
+  }
+);
 // SERVIDOR
 app.listen(3001, () => {
 

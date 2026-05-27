@@ -56,7 +56,10 @@ const [segundoUsuario,
    setNota] =
    useState("");
 
- 
+const [informes,
+setInformes] =
+useState([]);
+
  const [importante,
   setImportante] =
   useState(false);
@@ -112,9 +115,6 @@ const [segundoUsuario,
   setPantallaActiva] =
   useState("inicio");
  
- const [informes,
-  setInformes] =
-  useState([]);
 
  const [horas,
   setHoras] =
@@ -211,20 +211,34 @@ const [segundoUsuario,
       );
     }
   };
+const obtenerInformes =
+async () => {
 
+  const res =
+    await fetch(
+      "https://congregacion-app.onrender.com/informes"
+    );
+
+  const data =
+    await res.json();
+
+  setInformes(data);
+};
   // CARGAR USUARIOS
   useEffect(() => {
 
-    fetch(
-      "https://congregacion-app.onrender.com/usuarios"
-    )
-      .then((res) => res.json())
+  fetch(
+    "https://congregacion-app.onrender.com/usuarios"
+  )
+    .then((res) => res.json())
 
-      .then((data) =>
-        setUsuarios(data)
-      );
+    .then((data) =>
+      setUsuarios(data)
+    );
 
-  }, []);
+  obtenerInformes();
+
+}, []);
 
   // FECHA
   const formatearFecha = (
@@ -1689,42 +1703,113 @@ pantallaActiva ===
   <button
     className="add-btn"
 
-    onClick={() => {
+    onClick={async () => {
 
-      const nuevoInforme = {
+  const nuevoInforme = {
 
-        usuario:
-          user.nombre,
+    id: Date.now(),
 
-        horas,
+    usuario:
+      user.nombre,
 
-        cursos,
+    usuario_id:
+      user.id,
 
-        participa,
+    horas,
 
-        comentario:
-          comentarioInforme
-      };
+    cursos,
 
-      setInformes([
-        ...informes,
+    participa,
+
+    comentario:
+      comentarioInforme
+  };
+
+  await fetch(
+    "https://congregacion-app.onrender.com/informes",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json"
+      },
+
+      body: JSON.stringify(
         nuevoInforme
-      ]);
+      )
+    }
+  );
 
-      setHoras("");
+  obtenerInformes();
 
-      setCursos("");
+  setHoras("");
 
-      setComentarioInforme("");
+  setCursos("");
 
-      alert(
-        "Informe enviado"
-      );
-    }}
+  setComentarioInforme("");
+
+  alert(
+    "Informe enviado"
+  );
+}}
   >
     📝 Enviar informe
   </button>
+<div className="cards-grid">
 
+  {informes.map((i) => (
+
+    <div
+      key={i.id}
+      className="card"
+    >
+
+      <h3>
+        👤 {i.usuario}
+      </h3>
+
+      <p>
+        ⏱️ Horas:
+        {" "}
+        {i.horas}
+      </p>
+
+      <p>
+        📚 Cursos:
+        {" "}
+        {i.cursos}
+      </p>
+
+      <p>
+        📣 Participó:
+        {" "}
+        {
+          i.participa ===
+          true ||
+
+          i.participa ===
+          "true"
+
+            ? "Sí"
+
+            : "No"
+        }
+      </p>
+
+      {i.comentario && (
+
+        <p>
+          📝 {
+            i.comentario
+          }
+        </p>
+      )}
+
+    </div>
+  ))}
+
+</div>
 </div>
 )}
 
