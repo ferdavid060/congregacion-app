@@ -1238,15 +1238,22 @@ parseInt(a.usuario_id)
 
         <h3>
           {
-            asignacionesFiltradas[0]
-              .parte
+            (
+  user?.rol === "admin"
+    ? asignaciones[0]
+    : asignacionesFiltradas[0]
+)?.parte
           }
         </h3>
 
         <p>
           📅 {
             formatearFecha(
-              asignacionesFiltradas[0].fecha
+              (
+  user?.rol === "admin"
+    ? asignaciones[0]
+    : asignacionesFiltradas[0]
+)?.fecha
             )
           }
         </p>
@@ -1257,7 +1264,11 @@ parseInt(a.usuario_id)
             asignaciones[0]
               .usuarios_ids
 
-              ? asignacionesFiltradas[0].usuarios_ids
+              ? (
+  user?.rol === "admin"
+    ? asignaciones[0]
+    : asignacionesFiltradas[0]
+)?.usuarios_ids
                   .map((id) => {
 
                     return usuarios.find(
@@ -1275,7 +1286,11 @@ parseInt(a.usuario_id)
 (u) =>
 
 parseInt(u.id) ===
-parseInt(asignacionesFiltradas[0].usuario_id)
+parseInt((
+  user?.rol === "admin"
+    ? asignaciones[0]
+    : asignacionesFiltradas[0]
+)?.usuario_id)
 
 )?.nombre
           }
