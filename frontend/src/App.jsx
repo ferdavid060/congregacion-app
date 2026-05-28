@@ -199,11 +199,9 @@ useState([]);
 
       } else {
 
-        obtenerAsignaciones(
-          data.id
-        );
-      }
+        obtenerTodasAsignaciones();
 
+      }
     } else {
 
       alert(
