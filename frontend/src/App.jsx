@@ -638,9 +638,9 @@ if (
           a.usuarios_ids
         ) {
 
-          return a.usuarios_ids.includes(
-            user.id
-          );
+        return a.usuarios_ids.includes(
+  parseInt(user.id)
+);
         }
 
         return (
