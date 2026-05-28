@@ -638,7 +638,9 @@ if (
   a.usuarios_ids
 ) {
 
-  return a.usuarios_ids.includes(
+  return a.usuarios_ids
+  .map(Number)
+  .includes(
     parseInt(user.id)
   );
 }
@@ -671,11 +673,11 @@ if (
             a.usuarios_ids
           ) {
 
-            return a.usuarios_ids.includes(
-              parseInt(
-                filtroUsuario
-              )
-            );
+            return a.usuarios_ids
+  .map(Number)
+  .includes(
+    parseInt(filtroUsuario)
+  );
           }
 
           return (
