@@ -899,7 +899,15 @@ ${a.categoria || "General"}`,
     "programa-mensual.pdf"
   );
 };
+console.log(
+  "ASIGNACIONES:",
+  asignaciones
+);
 
+console.log(
+  "USER:",
+  user
+);
   
  const eventosCalendario =
 
