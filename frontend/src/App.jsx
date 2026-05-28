@@ -1193,18 +1193,13 @@ parseInt(a.usuario_id)
       📅 Asignaciones
     </h3>
 
-    <h1>
-      {
-        asignaciones.length
-      }
-    </h1>{
+    {
   user?.rol === "admin"
 
     ? asignaciones.length
 
     : asignacionesFiltradas.length
 }
-
   </div>
 
   {user?.rol ===
