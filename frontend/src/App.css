@@ -1080,7 +1080,14 @@ text-align: center;
 
   transition: 0.25s;
 }
+.dashboard-card {
+  cursor: pointer;
+  transition: 0.2s;
+}
 
+.dashboard-card:hover {
+  transform: scale(1.03);
+}
 .dashboard-card::before {
 
   content: "";
