@@ -1238,7 +1238,7 @@ parseInt(a.usuario_id)
 
         <h3>
           {
-            asignaciones[0]
+            asignacionesFiltradas[0]
               .parte
           }
         </h3>
@@ -1246,8 +1246,7 @@ parseInt(a.usuario_id)
         <p>
           📅 {
             formatearFecha(
-              asignaciones[0]
-                .fecha
+              asignacionesFiltradas[0].fecha
             )
           }
         </p>
@@ -1258,8 +1257,7 @@ parseInt(a.usuario_id)
             asignaciones[0]
               .usuarios_ids
 
-              ? asignaciones[0]
-                  .usuarios_ids
+              ? asignacionesFiltradas[0].usuarios_ids
                   .map((id) => {
 
                     return usuarios.find(
@@ -1277,7 +1275,7 @@ parseInt(a.usuario_id)
 (u) =>
 
 parseInt(u.id) ===
-parseInt(asignaciones[0].usuario_id)
+parseInt(asignacionesFiltradas[0].usuario_id)
 
 )?.nombre
           }
