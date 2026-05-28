@@ -1756,6 +1756,8 @@ pantallaActiva ===
   >
     📝 Enviar informe
   </button>
+  {user?.rol ===
+  "admin" && (
 <div className="cards-grid">
 
   {informes.map((i) => (
@@ -1810,6 +1812,8 @@ pantallaActiva ===
   ))}
 
 </div>
+
+)}
 </div>
 )}
 
