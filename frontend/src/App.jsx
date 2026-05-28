@@ -1180,13 +1180,15 @@ parseInt(a.usuario_id)
 <>
 <div className="dashboard-grid">
 
-  <div className="dashboard-card">
+ <div
+  className="dashboard-card"
 
-onClick={() =>
-  setPantallaActiva(
-    "calendario"
-  )
- }
+  onClick={() =>
+    setPantallaActiva(
+      "calendario"
+    )
+  }
+>
     <h3>
       📅 Asignaciones
     </h3>
@@ -1199,19 +1201,7 @@ onClick={() =>
 
   </div>
 
-  <div className="dashboard-card">
-
-    <h3>
-      👥 Usuarios
-    </h3>
-
-    <h1>
-      {
-        usuarios.length
-      }
-    </h1>
-
-  </div>{user?.rol ===
+  {user?.rol ===
   "admin" && (
 
 <div
@@ -1229,7 +1219,9 @@ onClick={() =>
   </h3>
 
   <h1>
-    {usuarios.length}
+    {
+      usuarios.length
+    }
   </h1>
 
 </div>
@@ -1245,9 +1237,6 @@ onClick={() =>
     )
   }
 >
-    <h3>
-      📝 Informes
-    </h3>
 
     <h1>
       {
