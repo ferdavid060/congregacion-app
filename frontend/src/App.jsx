@@ -1178,9 +1178,7 @@ parseInt(a.usuario_id)
   "inicio" && (
 
 <>
-<div className="dashboard-grid">
-
- <div
+<div
   className="dashboard-card"
 
   onClick={() =>
@@ -1189,17 +1187,22 @@ parseInt(a.usuario_id)
     )
   }
 >
-    <h3>
-      📅 Asignaciones
-    </h3>
 
+  <h3>
+    📅 Asignaciones
+  </h3>
+
+  <h1>
     {
-  user?.rol === "admin"
+      user?.rol === "admin"
 
-    ? asignaciones.length
+        ? asignaciones.length
 
-    : asignacionesFiltradas.length
-}
+        : asignacionesFiltradas.length
+    }
+  </h1>
+
+
   </div>
 
   {user?.rol ===
@@ -1251,7 +1254,7 @@ parseInt(a.usuario_id)
 
 </div>
 
-</div>
+
 
 <div className="dashboard-next">
 
