@@ -635,15 +635,6 @@ if (
       (a) => {
 
         if (
-          a.usuarios_ids
-        ) {
-
-        return a.usuarios_ids.includes(
-  parseInt(user.id)
-);
-        }
-
-        if (
   a.usuarios_ids
 ) {
 
@@ -651,10 +642,14 @@ if (
     parseInt(user.id)
   );
 }
-      }
-    );
 
-} else {
+        return (
+          parseInt(a.usuario_id) ===
+          parseInt(user.id)
+        );
+      });
+
+  } else {
 
   if (
     filtroUsuario ===
