@@ -734,19 +734,24 @@ const generarMensajeWhatsApp =
         ? evento.usuarios_ids
             .map((id) => {
 
-              return usuarios.find(
-                (u) =>
-                  u.id === id
-              )?.nombre;
+             return usuarios.find(
+  (u) =>
+
+    parseInt(u.id) ===
+    parseInt(id)
+
+)?.nombre;
             })
 
             .join(" + ")
 
         : usuarios.find(
-            (u) =>
-              u.id ===
-              evento.usuario_id
-          )?.nombre;
+(u) =>
+
+parseInt(u.id) ===
+parseInt(evento.usuario_id)
+
+)?.nombre;
 
     return encodeURIComponent(
 
@@ -795,18 +800,23 @@ ${
               .map((id) => {
 
                 return usuarios.find(
-                  (u) =>
-                    u.id === id
-                )?.nombre;
+  (u) =>
+
+    parseInt(u.id) ===
+    parseInt(id)
+
+)?.nombre;
               })
 
               .join(" + ")
 
           : usuarios.find(
-              (u) =>
-                u.id ===
-                a.usuario_id
-            )?.nombre;
+(u) =>
+
+parseInt(u.id) ===
+parseInt(evento.usuario_id)
+
+)?.nombre;
 
       // CUADRO
 
@@ -922,18 +932,23 @@ ${emojisCategorias[
                 .map((id) => {
 
                   return usuarios.find(
-                    (u) =>
-                      u.id === id
-                  )?.nombre;
+  (u) =>
+
+    parseInt(u.id) ===
+    parseInt(id)
+
+)?.nombre
                 })
 
                 .join(" + ")
 
             : usuarios.find(
-                (u) =>
-                  u.id ===
-                  a.usuario_id
-              )?.nombre
+(u) =>
+
+parseInt(u.id) ===
+parseInt(evento.usuario_id)
+
+)?.nombre
         ),
 
       date: a.fecha,
@@ -1243,19 +1258,23 @@ ${emojisCategorias[
                   .map((id) => {
 
                     return usuarios.find(
-                      (u) =>
-                        u.id === id
-                    )?.nombre;
+  (u) =>
+
+    parseInt(u.id) ===
+    parseInt(id)
+
+)?.nombre;
                   })
 
                   .join(" + ")
 
               : usuarios.find(
-                  (u) =>
-                    u.id ===
-                    asignaciones[0]
-                      .usuario_id
-                )?.nombre
+(u) =>
+
+parseInt(u.id) ===
+parseInt(evento.usuario_id)
+
+)?.nombre
           }
         </p>
 
@@ -1916,8 +1935,11 @@ a.usuarios_ids
 .map((id) => {
 
 return usuarios.find(
-(u) =>
-u.id === id
+  (u) =>
+
+    parseInt(u.id) ===
+    parseInt(id)
+
 )?.nombre;
 })
 
@@ -1925,8 +1947,10 @@ u.id === id
 
 : usuarios.find(
 (u) =>
-u.id ===
-a.usuario_id
+
+parseInt(u.id) ===
+parseInt(evento.usuario_id)
+
 )?.nombre
 }
 </p>
@@ -2055,18 +2079,23 @@ eventClick={(info) => {
                 .map((id) => {
 
                   return usuarios.find(
-                    (u) =>
-                      u.id === id
-                  )?.nombre;
+  (u) =>
+
+    parseInt(u.id) ===
+    parseInt(id)
+
+)?.nombre;
                 })
 
                 .join(" + ")
 
             : usuarios.find(
-                (u) =>
-                  u.id ===
-                  eventoSeleccionado.usuario_id
-              )?.nombre
+(u) =>
+
+parseInt(u.id) ===
+parseInt(evento.usuario_id)
+
+)?.nombre
         }
 
       </p>
