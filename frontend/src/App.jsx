@@ -900,13 +900,11 @@ ${a.categoria || "General"}`,
   );
 };
 console.log(
-  "ASIGNACIONES:",
-  asignaciones
-);
-
-console.log(
-  "USER:",
-  user
+  JSON.stringify(
+    asignaciones,
+    null,
+    2
+  )
 );
   
  const eventosCalendario =
