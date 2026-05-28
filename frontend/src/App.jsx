@@ -1197,7 +1197,13 @@ parseInt(a.usuario_id)
       {
         asignaciones.length
       }
-    </h1>
+    </h1>{
+  user?.rol === "admin"
+
+    ? asignaciones.length
+
+    : asignacionesFiltradas.length
+}
 
   </div>
 
@@ -1238,13 +1244,17 @@ parseInt(a.usuario_id)
   }
 >
 
-    <h1>
-      {
-        informes.length
-      }
-    </h1>
+  <h3>
+    📝 Informes
+  </h3>
 
-  </div>
+  <h1>
+    {
+      informes.length
+    }
+  </h1>
+
+</div>
 
 </div>
 
