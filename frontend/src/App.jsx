@@ -643,10 +643,14 @@ if (
 );
         }
 
-        return (
-          a.usuario_id ===
-          user.id
-        );
+        if (
+  a.usuarios_ids
+) {
+
+  return a.usuarios_ids.includes(
+    parseInt(user.id)
+  );
+}
       }
     );
 
