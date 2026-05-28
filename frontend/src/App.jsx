@@ -814,7 +814,7 @@ ${
 (u) =>
 
 parseInt(u.id) ===
-parseInt(evento.usuario_id)
+parseInt(a.usuario_id)
 
 )?.nombre;
 
@@ -946,7 +946,7 @@ ${emojisCategorias[
 (u) =>
 
 parseInt(u.id) ===
-parseInt(evento.usuario_id)
+parseInt(a.usuario_id)
 
 )?.nombre
         ),
@@ -1272,7 +1272,7 @@ parseInt(evento.usuario_id)
 (u) =>
 
 parseInt(u.id) ===
-parseInt(evento.usuario_id)
+parseInt(asignaciones[0].usuario_id)
 
 )?.nombre
           }
@@ -1949,7 +1949,7 @@ return usuarios.find(
 (u) =>
 
 parseInt(u.id) ===
-parseInt(evento.usuario_id)
+parseInt(a.usuario_id)
 
 )?.nombre
 }
@@ -2093,7 +2093,7 @@ eventClick={(info) => {
 (u) =>
 
 parseInt(u.id) ===
-parseInt(evento.usuario_id)
+parseInt(eventoSeleccionado.usuario_id)
 
 )?.nombre
         }
